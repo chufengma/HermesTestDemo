@@ -1,0 +1,80 @@
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+            : "http://192.168.19.7:8081/nexus/content/repositories/releases/"
+}
+
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+            : "http://192.168.19.7:8081/nexus/content/repositories/snapshots/"
+}
+
+def getRepositoryUsername() {
+    return hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "admin"
+}
+
+def getGroudID() {
+    return hasProperty('GROUPID') ? GROUPID : "ctrip.wireless.android"
+}
+
+def getRepositoryPassword() {
+    return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "admin123"
+}
+
+def getArtifactId() {
+    return getModuleName()
+}
+
+def getModuleName() {
+    return project.getName()
+}
+
+apply plugin: 'maven-publish'
+def rnVersion = "0.60.3-tmp1-SNAPSHOT"
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId getGroudID()
+            artifactId getModuleName()
+            version rnVersion
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
+                classifier 'AAR'
+                extension 'aar'
+            }
+            artifact("${buildDir}/intermediates/symbols/release/R.txt") {
+                classifier 'R'
+                extension 'txt'
+            }
+            artifact("${buildDir}/intermediates/packaged-classes/release/classes.jar") {
+                classifier 'Jar'
+                extension 'jar'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username getRepositoryUsername()
+                password getRepositoryPassword()
+            }
+
+            if (rnVersion.endsWith('-SNAPSHOT')) {
+                url getSnapshotRepositoryUrl()
+            } else {
+                url getReleaseRepositoryUrl()
+            }
+        }
+    }
+}
+
+task uploadAAR(dependsOn: ['assembleRelease', 'publish']) {
+    doLast {
+        if (hasProperty("versionPath")) {
+            doLast {
+                checkUpdate("$versionPath", "$TypeAAR", "$buildDir")
+            }
+        }
+    }
+}
+

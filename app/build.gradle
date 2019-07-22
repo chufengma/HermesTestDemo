@@ -1,0 +1,147 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        applicationId "ctrip.wireless.android.crn"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            jniDebuggable true
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "boolean", "HERMES_ENABLE", useHermesEngine
+        }
+
+        release {
+            minifyEnabled false
+            buildConfigField "boolean", "HERMES_ENABLE", useHermesEngine
+        }
+    }
+
+    packagingOptions {
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/armeabi-v7a/libimagepipeline.so'
+    }
+}
+
+
+file("$rootDir/ReactAndroid/build/react-ndk/exported").deleteDir()
+file("$rootDir/app/src/main/assets/webapp").deleteDir()
+if (Boolean.parseBoolean(useHermesEngine)) {
+    copy {
+        from("$rootDir/jsbundles/hermes")
+        into("$rootDir/app/src/main/assets/webapp")
+    }
+} else {
+    copy {
+        from("$rootDir/jsbundles/jsc")
+        into("$rootDir/app/src/main/assets/webapp")
+    }
+}
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+//    api("androidx.appcompat:appcompat:1.0.2")
+    api "com.android.support:appcompat-v7:26.1.0"
+    api "com.android.support:cardview-v7:26.1.0"
+    api"com.android.support:support-v4:26.1.0"
+    api "com.android.support:support-annotations:26.1.0"
+    api "com.android.support:design:26.1.0"
+    api "com.android.support:recyclerview-v7:26.1.0"
+    api "android.arch.lifecycle:runtime:1.1.1"
+    compile project(':CTBusiness')
+}
+
+//def addX86SoLibraryIntoReleaseAssets() {
+//    def releaseAssetsFiles = new File("$projectDir/build/intermediates/assets/release/x86");
+//    if (releaseAssetsFiles.exists()) {
+//        for (File tempFile: releaseAssetsFiles.listFiles()) {
+//            tempFile.delete();
+//        }
+//    } else {
+//        releaseAssetsFiles.mkdir();
+//    }
+//
+//    copyX86SoLibrary(releaseAssetsFiles);
+//}
+//
+//def addX86SoLibraryIntoDebugAssets() {
+//    def debugAssetsFiles = new File("$projectDir/build/intermediates/assets/debug/x86");
+//    if (debugAssetsFiles.exists()) {
+//        for (File tempFile: debugAssetsFiles.listFiles()) {
+//            tempFile.delete();
+//        }
+//    } else {
+//        debugAssetsFiles.mkdir();
+//    }
+//
+//    copyX86SoLibrary(debugAssetsFiles);
+//}
+//
+//def copyX86SoLibrary(def destFile) {
+//    if (destFile == null) {
+//        throw new IllegalStateException("param of destinationPath is NULL");
+//    }
+//    def x86SoLibraryPath = new File("$rootDir/rnSource/ReactAndroid/build/react-ndk/all/x86");
+//    if (x86SoLibraryPath.exists()) {
+//        copy {
+//            from(x86SoLibraryPath) {
+//                include "libgnustl_shared.so", "libjsc.so", "libglog.so", "libglog_init.so", "libfolly_json.so", "libfb.so", "libyoga.so", "libreactnativejnifb.so", "libreactnativejni.so"
+//            }
+//            into destFile
+//        }
+//    } else {
+//        throw new FileOutputStream("x86 so Libraries DO NOT exist!");
+//    }
+//    def icuCommonPath = new File("$rootDir/rnSource/ReactAndroid/build/intermediates/exploded-aar/org.webkit/android-jsc/r174650/jni/x86");
+//    if (icuCommonPath.exists()) {
+//        copy {
+//            from(icuCommonPath) {
+//                include "libicu_common.so"
+//            }
+//            into destFile
+//        }
+//    } else {
+//        throw new FileOutputStream("x86 libicu_common so Libraries DO NOT exist!");
+//    }
+//}
+//
+//gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
+//    for (Task varTask: taskGraph.allTasks) {
+//        if (varTask.project.name.equalsIgnoreCase("app")) {
+//            if (varTask.name.equals("mergeDebugAssets")) {
+//                varTask << {
+//                    addX86SoLibraryIntoDebugAssets();
+//                }
+//            } else if (varTask.name.equalsIgnoreCase("mergeReleaseAssets")) {
+//                varTask << {
+//                    addX86SoLibraryIntoReleaseAssets();
+//                }
+//            }
+//        }
+//    }
+//}
