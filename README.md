@@ -20,7 +20,7 @@
 useHermesEngine=true
 
 # shell
-./gradle installDebug
+./gradlew installDebug
 ```
 
 #### Run with JSC
@@ -29,5 +29,5 @@ useHermesEngine=true
 useHermesEngine=false
 
 # shell
-./gradle installDebug
+./gradlew installDebug
 ```
