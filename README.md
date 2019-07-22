@@ -10,3 +10,24 @@
 
 #### chart
 ![chart](./docs/JSCvsHermesTimeCost.png)
+
+
+### How to run this demo?
+
+#### Run with Hermes
+```
+# gradle.properties
+useHermesEngine=true
+
+# shell
+./gradle installDebug
+```
+
+#### Run with JSC
+```
+# gradle.properties
+useHermesEngine=false
+
+# shell
+./gradle installDebug
+```
