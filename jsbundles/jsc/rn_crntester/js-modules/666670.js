@@ -1,0 +1,1 @@
+__d(function(g,r,i,a,m,e,d){'use strict';m.exports=function(t){var h=t.ios;return null==h&&(h=''),{deprecated:!0,height:t.height,uri:h,width:t.width}}},666670,[]);

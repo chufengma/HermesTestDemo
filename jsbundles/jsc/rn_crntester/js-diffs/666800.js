@@ -1,0 +1,1 @@
+__d(function(g,r,i,a,m,e,d){'use strict';m.exports=function(t,p){return!t||'RNTesterListAction'===p.type||t.openExample&&'RNTesterBackAction'===p.type?{openExample:null}:'RNTesterExampleAction'===p.type&&r(d[0]).Modules[p.openExample]?{openExample:p.openExample}:t}},666800,[666808]);

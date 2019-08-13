@@ -9,9 +9,9 @@ package ctrip.wireless.android.crn.instance;
 import java.io.File;
 
 import ctrip.wireless.android.crn.ContextHolder;
+import ctrip.wireless.android.crn.utils.FileUtil;
 import ctrip.wireless.android.crn.utils.LogUtil;
 import ctrip.wireless.android.crn.utils.StringUtil;
-import ctrip.wireless.android.crn.utils.Un7zUtil;
 
 public class PackageManager {
 
@@ -40,8 +40,8 @@ public class PackageManager {
         }
         boolean unzipSuccess;
         String pkgAssetsPath = packagePathInApkAssetsDir(productName);
-        String webappDir = getFileWebappPath();
-        unzipSuccess = Un7zUtil.extractAssets(ContextHolder.context, pkgAssetsPath, webappDir);
+        String webappDir = getFileWebappPath() + "/" + productName;
+        unzipSuccess = FileUtil.copyDirFromAsset(ContextHolder.context, pkgAssetsPath, webappDir);
         LogUtil.e("Package： install from APK =" + pkgAssetsPath + ", to:" + productName + ", un-7z ret=" + unzipSuccess);
         return unzipSuccess;
     }
@@ -68,7 +68,7 @@ public class PackageManager {
         if (productName == null) {
             return "";
         }
-        String pkgAssetsPath = RN_PACKAGE_DIR + "/" + productName + ".7z";
+        String pkgAssetsPath = RN_PACKAGE_DIR + "/" + productName + "";
         return pkgAssetsPath;
     }
 
